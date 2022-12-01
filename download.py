@@ -6,6 +6,7 @@ from pathlib import Path
 from os import path
 import time
 import ffmpeg
+
 thumbnail = "" 
 yt1 = ''
 
