@@ -12,7 +12,7 @@ Organize your download's by video id by putting the output in a folder.
 
 You can download the thumbnail, audio, and video in these options: Thumbnail, Video, Audio, Thumbnail and Video, Thumbnail and Audio.
 
-# Instalation
+# Installation
 
 1. Download and extract the code.
 2. Download all the python packages. I would use ``` pip install -r requirements.txt ```. If you wish to download 1080p+ videos, we require you to download [ffmpeg](https://ffmpeg.org/download.html).
