@@ -19,7 +19,7 @@ last_chars = url[-11:]
 path1 = Path(last_chars)
 if os.path.isdir(path1):
     print('Url already downloaded! Look for the directory with the same youtube id as', last_chars) 
-    #quit()
+    quit()
 else:
     path1.mkdir(parents=True)
 
