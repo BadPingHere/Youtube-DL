@@ -6,7 +6,6 @@ from pathlib import Path
 from os import path
 import time
 import ffmpeg
-
 thumbnail = "" 
 yt1 = ''
 
@@ -19,7 +18,7 @@ last_chars = url[-11:]
 path1 = Path(last_chars)
 if os.path.isdir(path1):
     print('Url already downloaded! Look for the directory with the same youtube id as', last_chars) 
-    #quit()
+    quit()
 else:
     path1.mkdir(parents=True)
 
@@ -51,6 +50,36 @@ def let_user_pick(options):
 options = ["Thumbnail", "Video", "Audio", "Thumbnail and Video", "Thumbnail and Audio"]
 res = let_user_pick(options)
 
+def download1080():
+    yt.streams.filter(res='1080p').first().download(output_path=base_dir, filename="tempvideo.mp4",)
+    yt.streams.filter(only_audio=True).first().download(output_path=base_dir, filename="tempaudio.mp4")
+    video, audio = ffmpeg.input(path.join(base_dir, "tempvideo.mp4")), ffmpeg.input(path.join(base_dir, "tempaudio.mp4"))
+    output = path.join(base_dir, "video.mp4")
+    (
+        ffmpeg
+            .concat(video, audio, v=1, a=1)
+            .output(output)
+            .global_args('-loglevel', 'quiet')
+            .run()
+    )
+    os.remove(path.join(base_dir, "tempvideo.mp4"))
+    os.remove(path.join(base_dir, "tempaudio.mp4")) 
+    
+def download1440():
+    yt.streams.filter(res='1440p').first().download(output_path=base_dir, filename="tempvideo.mp4",)
+    yt.streams.filter(only_audio=True).first().download(output_path=base_dir, filename="tempaudio.mp4")
+    video, audio = ffmpeg.input(path.join(base_dir, "tempvideo.mp4")), ffmpeg.input(path.join(base_dir, "tempaudio.mp4"))
+    output = path.join(base_dir, "video.mp4")
+    (
+        ffmpeg
+            .concat(video, audio, v=1, a=1)
+            .output(output)
+            .global_args('-loglevel', 'quiet')
+            .run()
+    )
+    os.remove(path.join(base_dir, "tempvideo.mp4"))
+    os.remove(path.join(base_dir, "tempaudio.mp4")) 
+
 if options[res] == "Thumbnail":
     get_image(thumbnail)
     
@@ -79,35 +108,10 @@ if options[res] == "Video":
         yt.streams.filter(res='720p').first().download(output_path=base_dir)
     if options[res] == "1080p":
         print('Downloding the video. This may take longer due to youtube being bad.')
-        yt.streams.filter(res='1080p').first().download(output_path=base_dir, filename="tempvideo.mp4",)
-        yt.streams.filter(only_audio=True).first().download(output_path=base_dir, filename="tempaudio.mp4")
-        video, audio = ffmpeg.input(path.join(base_dir, "tempvideo.mp4")), ffmpeg.input(path.join(base_dir, "tempaudio.mp4"))
-        output = path.join(base_dir, "video.mp4")
-        (
-            ffmpeg
-                .concat(video, audio, v=1, a=1)
-                .output(output)
-                .global_args('-loglevel', 'quiet')
-                .run()
-        )
-        os.remove(path.join(base_dir, "tempvideo.mp4"))
-        os.remove(path.join(base_dir, "tempaudio.mp4")) 
+        download1080()
     if options[res] == "1440p":
         print('Downloding the video. This may take longer due to youtube being bad.')
-        yt.streams.filter(res='1080p').first().download(output_path=base_dir, filename="tempvideo.mp4",)
-        yt.streams.filter(only_audio=True).first().download(output_path=base_dir, filename="tempaudio.mp4")
-        video, audio = ffmpeg.input(path.join(base_dir, "tempvideo.mp4")), ffmpeg.input(path.join(base_dir, "tempaudio.mp4"))
-        output = path.join(base_dir, "video.mp4")
-        (
-            ffmpeg
-                .concat(video, audio, v=1, a=1)
-                .output(output)
-                .global_args('-loglevel', 'quiet')
-                .run()
-        )
-        os.remove(path.join(base_dir, "tempvideo.mp4"))
-        os.remove(path.join(base_dir, "tempaudio.mp4")) 
-        
+        download1440()
 if options[res] == "Audio":
     print("Downloading the best audio...")
     yt.streams.filter(only_audio=True).first().download(output_path=base_dir)
@@ -143,36 +147,12 @@ if options[res] == "Thumbnail and Video":
         get_image(thumbnail)
     if options[res] == "1080p":
         print('Downloding the video. This may take longer due to youtube being bad.')
-        yt.streams.filter(res='1080p').first().download(output_path=base_dir, filename="tempvideo.mp4",)
-        yt.streams.filter(only_audio=True).first().download(output_path=base_dir, filename="tempaudio.mp4")
-        video, audio = ffmpeg.input(path.join(base_dir, "tempvideo.mp4")), ffmpeg.input(path.join(base_dir, "tempaudio.mp4"))
-        output = path.join(base_dir, "video.mp4")
-        (
-            ffmpeg
-                .concat(video, audio, v=1, a=1)
-                .output(output)
-                .global_args('-loglevel', 'quiet')
-                .run()
-        )
-        os.remove(path.join(base_dir, "tempvideo.mp4"))
-        os.remove(path.join(base_dir, "tempaudio.mp4"))
+        download1080()
         print("Downloading the thumbnail...")
         get_image(thumbnail) 
     if options[res] == "1440p":
         print('Downloding the video. This may take longer due to youtube being bad.')
-        yt.streams.filter(res='1080p').first().download(output_path=base_dir, filename="tempvideo.mp4",)
-        yt.streams.filter(only_audio=True).first().download(output_path=base_dir, filename="tempaudio.mp4")
-        video, audio = ffmpeg.input(path.join(base_dir, "tempvideo.mp4")), ffmpeg.input(path.join(base_dir, "tempaudio.mp4"))
-        output = path.join(base_dir, "video.mp4")
-        (
-            ffmpeg
-                .concat(video, audio, v=1, a=1)
-                .output(output)
-                .global_args('-loglevel', 'quiet')
-                .run()
-        )
-        os.remove(path.join(base_dir, "tempvideo.mp4"))
-        os.remove(path.join(base_dir, "tempaudio.mp4")) 
+        download1440()
         print("Downloading the thumbnail...")
         get_image(thumbnail)
         
