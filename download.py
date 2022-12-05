@@ -6,6 +6,8 @@ from pathlib import Path
 from os import path
 import time
 import ffmpeg
+from youtube_transcript_api import YouTubeTranscriptApi
+from youtube_transcript_api.formatters import SRTFormatter
 thumbnail = "" 
 yt1 = ''
 
@@ -37,6 +39,7 @@ def get_image(thumbnail): # from Pavel Pančocha on stackoverflow. Good man!
 base_dir = path.join(path.dirname(path.realpath(__file__)), path1)
 
 def let_user_pick(options):
+    print("Note if you pick a quality that isnt on the video, the script will crash:")
     print("What do you want to download?:")
     for idx, element in enumerate(options):
         print("{}) {}".format(idx + 1, element))
@@ -80,9 +83,17 @@ def download1440():
     os.remove(path.join(base_dir, "tempvideo.mp4"))
     os.remove(path.join(base_dir, "tempaudio.mp4")) 
 
+def download_captions():
+    file_to_open = base_dir+"\captions.srt"
+    transcript = YouTubeTranscriptApi.get_transcript(last_chars, languages=['en']) # you can change the language to something else
+    formatter = SRTFormatter()
+    srt_formatted = formatter.format_transcript(transcript)
+    with open(file_to_open, 'w', encoding='utf-8') as srt_file:
+        srt_file.write(srt_formatted)
+
 if options[res] == "Thumbnail":
     get_image(thumbnail)
-    
+
 if options[res] == "Video":
     def let_user_pick(options):
         print("What size do you want the video?:")
@@ -96,7 +107,19 @@ if options[res] == "Video":
             pass
         return None
     options = ["144p", "360p", "720p", "1080p", "1440p"]
-    res = let_user_pick(options)
+    def let_user_pick(options1):
+        print("Would you like to download captions?")
+        for idx, element in enumerate(options1):
+            print("{}) {}".format(idx + 1, element))
+        i = input("Enter number: ")
+        try:
+            if 0 < int(i) <= len(options1):
+                return int(i) - 1
+        except:
+            pass
+        return None
+    options1 = ["Yes", "No"]
+    res = let_user_pick(options1)
     if options[res] == "144p":
         print('Downloding the video...')
         yt.streams.filter(res='144p').first().download(output_path=base_dir)
@@ -112,6 +135,9 @@ if options[res] == "Video":
     if options[res] == "1440p":
         print('Downloding the video. This may take longer due to youtube being bad.')
         download1440()
+    if options1[res] == "Yes":
+        download_captions()
+        
 if options[res] == "Audio":
     print("Downloading the best audio...")
     yt.streams.filter(only_audio=True).first().download(output_path=base_dir)
@@ -155,6 +181,21 @@ if options[res] == "Thumbnail and Video":
         download1440()
         print("Downloading the thumbnail...")
         get_image(thumbnail)
+    def let_user_pick(options1):
+        print("Would you like to download captions?")
+        for idx, element in enumerate(options1):
+            print("{}) {}".format(idx + 1, element))
+        i = input("Enter number: ")
+        try:
+            if 0 < int(i) <= len(options1):
+                return int(i) - 1
+        except:
+            pass
+        return None
+    options1 = ["Yes", "No"]
+    res = let_user_pick(options1)
+    if options1[res] == "Yes":
+        download_captions()
         
 if options[res] == "Thumbnail and Audio":
     print("Downloading the best audio...")
