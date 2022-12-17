@@ -107,6 +107,7 @@ if options[res] == "Video":
             pass
         return None
     options = ["144p", "360p", "720p", "1080p", "1440p"]
+    res2 = let_user_pick(options)
     def let_user_pick(options1):
         print("Would you like to download captions?")
         for idx, element in enumerate(options1):
@@ -120,19 +121,19 @@ if options[res] == "Video":
         return None
     options1 = ["Yes", "No"]
     res = let_user_pick(options1)
-    if options[res] == "144p":
+    if options[res2] == "144p":
         print('Downloding the video...')
         yt.streams.filter(res='144p').first().download(output_path=base_dir)
-    if options[res] == "360p":
+    if options[res2] == "360p":
         print('Downloding the video...')
         yt.streams.filter(res='360p').first().download(output_path=base_dir)
-    if options[res] == "720p":
+    if options[res2] == "720p":
         print('Downloding the video...')
         yt.streams.filter(res='720p').first().download(output_path=base_dir)
-    if options[res] == "1080p":
+    if options[res2] == "1080p":
         print('Downloding the video. This may take longer due to youtube being bad.')
         download1080()
-    if options[res] == "1440p":
+    if options[res2] == "1440p":
         print('Downloding the video. This may take longer due to youtube being bad.')
         download1440()
     if options1[res] == "Yes":
@@ -155,28 +156,28 @@ if options[res] == "Thumbnail and Video":
             pass
         return None
     options = ["144p", "360p", "720p", "1080p", "1440p"]
-    res = let_user_pick(options)
+    res3 = let_user_pick(options)
     if options[res] == "144p":
         print('Downloding the video...')
         print("Downloading the thumbnail...")
         get_image(thumbnail)
         yt.streams.filter(res='144p').first().download(output_path=base_dir)
-    if options[res] == "360p":
+    if options[res3] == "360p":
         print('Downloding the video...')
         yt.streams.filter(res='360p').first().download(output_path=base_dir)
         print("Downloading the thumbnail...")
         get_image(thumbnail)
-    if options[res] == "720p":
+    if options[res3] == "720p":
         print('Downloding the video...')
         yt.streams.filter(res='720p').first().download(output_path=base_dir)
         print("Downloading the thumbnail...")
         get_image(thumbnail)
-    if options[res] == "1080p":
+    if options[res3] == "1080p":
         print('Downloding the video. This may take longer due to youtube being bad.')
         download1080()
         print("Downloading the thumbnail...")
         get_image(thumbnail) 
-    if options[res] == "1440p":
+    if options[res3] == "1440p":
         print('Downloding the video. This may take longer due to youtube being bad.')
         download1440()
         print("Downloading the thumbnail...")
