@@ -1,10 +1,8 @@
 from pytube import YouTube
 import requests
 import os
-import shutil
 from pathlib import Path
 from os import path
-import time
 import ffmpeg
 from youtube_transcript_api import YouTubeTranscriptApi
 from youtube_transcript_api.formatters import SRTFormatter
@@ -28,7 +26,7 @@ else:
 def get_image(thumbnail): # from Pavel Pančocha on stackoverflow. Good man!
     image_name = path.split(yt.thumbnail_url)[1] 
     try:
-        image = requests.get(yt.thumbnail_url)
+        image = requests.get("http://img.youtube.com/vi/%s/0.jpg" % yt.video_id)
     except OSError:
         return False
     if image.status_code == 200:
