@@ -6,12 +6,32 @@ from os import path
 import ffmpeg
 from youtube_transcript_api import YouTubeTranscriptApi
 from youtube_transcript_api.formatters import SRTFormatter
-thumbnail = "" 
+from urllib.parse import urlparse
+
 yt1 = ''
 
-print('Hello! Please enter your youtube url:')
-url = input("Enter url: ")
-yt = YouTube(url)
+def uri_validator(x):
+    try:
+        result = urlparse(x)
+        return all([result.scheme, result.netloc])
+    except:
+        return False
+
+def runscript(firsttime):
+    global url
+    if firsttime == True:
+        print('Hello! Please enter your youtube url:')
+        url = input("Enter url: ")
+    else:
+        url = input("Enter url: ")
+
+runscript(True)
+
+if uri_validator(url) == True:
+    yt = YouTube(url)
+else:
+    print("Invalid url! Make sure to include the http:// markers in a url.")
+    runscript(False)
 last_chars = url[-11:]
 
 #create directory
@@ -23,8 +43,9 @@ else:
     path1.mkdir(parents=True)
 
 
-def get_image(thumbnail): # from Pavel Pančocha on stackoverflow. Good man!
-    image_name = path.split(yt.thumbnail_url)[1] 
+def get_image(): # from Pavel Pančocha on stackoverflow. Good man!
+    thumb_url = yt.thumbnail_url.split('?')[0] # Fixes issue with some url's where parameters were included in the thumb url process
+    image_name = path.split(thumb_url)[1]
     try:
         image = requests.get("http://img.youtube.com/vi/%s/0.jpg" % yt.video_id)
     except OSError:
@@ -90,7 +111,7 @@ def download_captions():
         srt_file.write(srt_formatted)
 
 if options[res] == "Thumbnail":
-    get_image(thumbnail)
+    get_image()
 
 if options[res] == "Video":
     def let_user_pick(options):
@@ -158,28 +179,28 @@ if options[res] == "Thumbnail and Video":
     if options[res] == "144p":
         print('Downloding the video...')
         print("Downloading the thumbnail...")
-        get_image(thumbnail)
+        get_image()
         yt.streams.filter(res='144p').first().download(output_path=base_dir)
     if options[res3] == "360p":
         print('Downloding the video...')
         yt.streams.filter(res='360p').first().download(output_path=base_dir)
         print("Downloading the thumbnail...")
-        get_image(thumbnail)
+        get_image()
     if options[res3] == "720p":
         print('Downloding the video...')
         yt.streams.filter(res='720p').first().download(output_path=base_dir)
         print("Downloading the thumbnail...")
-        get_image(thumbnail)
+        get_image()
     if options[res3] == "1080p":
         print('Downloding the video. This may take longer due to youtube being bad.')
         download1080()
         print("Downloading the thumbnail...")
-        get_image(thumbnail) 
+        get_image() 
     if options[res3] == "1440p":
         print('Downloding the video. This may take longer due to youtube being bad.')
         download1440()
         print("Downloading the thumbnail...")
-        get_image(thumbnail)
+        get_image()
     def let_user_pick(options1):
         print("Would you like to download captions?")
         for idx, element in enumerate(options1):
@@ -200,4 +221,4 @@ if options[res] == "Thumbnail and Audio":
     print("Downloading the best audio...")
     yt.streams.filter(only_audio=True).first().download(output_path=base_dir)
     print("Downloading the thumbnail...")
-    get_image(thumbnail)
+    get_image()
